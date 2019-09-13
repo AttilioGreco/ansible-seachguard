@@ -1,2 +1,6 @@
 ---
-- src: geerlingguy.docker
+- src: geerlingguy.java
+  version: 1.9.6
+- src: elastic.elasticsearch
+  version: 7.1.1
+

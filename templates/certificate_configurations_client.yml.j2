@@ -1,0 +1,14 @@
+ca:
+  root:
+     dn: {{ search_guard_nodes.root.dn }}
+     keysize: {{ search_guard_nodes.root.keysize }}
+     validityDays: {{ search_guard_nodes.root.validityDays }}
+     pkPassword: {{ search_guard_nodes.root.pkPassword }}
+     file: {{ search_guard_nodes.root.file }}
+
+defaults:
+      validityDays: {{ search_guard_nodes.defaults.validityDays }}
+      pkPassword: {{ search_guard_nodes.defaults.pkPassword }}
+      httpsEnabled: {{ search_guard_nodes.defaults.httpsEnabled }}
+clients:
+{{ item | to_nice_yaml|  indent( width=2, indentfirst=True) }}

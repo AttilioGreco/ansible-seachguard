@@ -12,5 +12,4 @@ galaxy_info:
   galaxy_tags:
     - molecule
 
-dependencies:
-  - { role: geerlingguy.docker, docker_install_compose: False }
+dependencies: []

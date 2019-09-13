@@ -9,7 +9,7 @@
     molecule_instance_config: "{{ lookup('env', 'MOLECULE_INSTANCE_CONFIG') }}"
     molecule_yml: "{{ lookup('file', molecule_file) | molecule_from_yaml }}"
 
-    ssh_user: ubuntu
+    ssh_user: centos
     ssh_port: 22
 
     security_group_name: molecule
@@ -35,32 +35,6 @@
     - include: security_group.yml
     - include: keypair.yml
 
-    - name: Create network
-      os_network:
-        name: molecule
-
-    - name: Create the subnet
-      os_subnet:
-        name: molecule
-        network_name: molecule
-        cidr: "10.2.0.0/24"
-        dns_nameservers:
-          - 8.8.8.8
-          - 8.8.4.4
-
-    - name: Gather facts about network for use with instance creation
-      os_networks_facts:
-
-    - name: Create the router
-      os_router:
-        name: ansible_filesystem
-        network: "{{ openstack_networks[0]['name'] }}"
-        interfaces: ["molecule"]
-
-    - name: Display all variables/facts known for a host
-      debug:
-        var: hostvars[inventory_hostname]
-
     - name: Create molecule instance(s)
       os_server:
         name: "{{ item.name }}"
@@ -69,7 +43,7 @@
         security_groups: "{{ security_group_name }}"
         key_name: "{{ keypair_name }}"
         nics:
-          - net-name: "molecule"
+          - net-name: "default"
       register: server
       with_items: "{{ molecule_yml.platforms }}"
       async: 7200

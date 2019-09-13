@@ -1,0 +1,33 @@
+- name: configure offline tls tool | debug show var seach_guard_offline_tls_tool_configurations
+  debug:
+    var: seach_guard_offline_tls_tool_configurations
+  delegate_to: "{{keyring_host}}"
+
+- name: configure offline tls tool | debug show var seach_guard_offline_tls_tool_configurations
+  debug:
+    var: nodes
+  delegate_to: "{{keyring_host}}"
+
+- name: configure offline tls tool | Automatic configurations CA
+  template:
+    src: certicate_configurations.yml.j2
+    dest: "{{ seach_guard_path_config_ca }}/ca_configuration.yml"
+  register: configurations_ca_render
+  delegate_to: "{{keyring_host}}"
+
+- name: configure offline tls tool | configurations Nodes
+  template:
+    src: certificate_configurations_node.yaml.j2
+    dest: "{{ seach_guard_path_config_node }}/node_{{ ansible_hostname }}.yml"
+  register: configurations_node_render
+  delegate_to: "{{ keyring_host }}"
+
+- name: configure offline tls tool | configurations client
+  template:
+    src: certificate_configurations_client.yml.j2
+    dest: "{{ seach_guard_path_cert_client }}/client_{{ item.name }}.yml"
+  register: configurations_client_render
+  delegate_to: "{{ keyring_host }}"
+  with_items: "{{ search_guard_client.clients }}"
+  run_once: true
+

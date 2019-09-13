@@ -1,0 +1,82 @@
+- name: Install cert | create elasticsearch ssl path
+  file:
+    state: directory
+    dest: "{{ elasticsearch_ssl_path }}"
+  when: configurations_node_render.changed
+
+- name: install cert | Create random string
+  set_fact:
+    tmp_folder: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
+  delegate_to: "localhost"
+  when: configurations_node_render.changed
+
+- name: install cert | Create random_path
+  set_fact:
+    random_path: "/tmp/{{tmp_folder}}/"
+  delegate_to: "localhost"
+  when: configurations_node_render.changed
+
+- name: create file in localbastion
+  file:
+    state: directory
+    dest: "{{ random_path }}"
+  delegate_to: "localhost"
+  when: configurations_node_render.changed
+
+- name: Install cert | copy cert from keyring host to nodes
+  fetch:
+    src: "{{ item }}"
+    dest: "{{ random_path }}"
+    flat: yes
+  when: configurations_node_render.changed
+  delegate_to: "{{keyring_host}}"
+  with_fileglob: 
+    - "{{ seach_guard_path_cert_node }}/*"
+
+- name: Install cert | copy cert from keyring host to nodes
+  fetch:
+    src: "{{ item }}"
+    dest: "{{ random_path }}"
+    flat: yes
+  when: configurations_node_render.changed
+  delegate_to: "{{keyring_host}}"
+  with_fileglob: 
+    - "{{ seach_guard_path_cert_node }}/*"
+
+- name: Install cert | copy root-ca from keyring host to nodes
+  fetch:
+    src: "{{ seach_guard_path_cert_ca }}/root-ca.pem"
+    dest: "{{ random_path }}"
+    flat: yes
+  when: configurations_node_render.changed
+  delegate_to: "{{keyring_host}}"
+
+- name: Install cert | syncronize cert to remote instance
+  synchronize:
+    src: "{{ random_path }}"
+    dest: "{{ elasticsearch_ssl_path }}"
+  when: configurations_node_render.changed
+
+- name: Install cert | fix cert permission
+  file:
+    dest: "{{ elasticsearch_ssl_path }}/*"
+    owner: elasticsearch
+    group: elasticsearch
+    mode: 0600
+    recurse: yes
+
+- name: Install cert | fix cert permission
+  file:
+    dest: "{{ elasticsearch_ssl_path }}/*"
+    owner: elasticsearch
+    group: elasticsearch
+    mode: 0600
+    recurse: yes
+
+- name: Install cert | remove cert from local folder
+  file:
+    path: "{{ random_path }}"
+    state: absent
+  delegate_to: "localhost"
+  when: configurations_node_render.changed
+  

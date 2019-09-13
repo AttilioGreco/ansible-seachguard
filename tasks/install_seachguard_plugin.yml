@@ -1,0 +1,48 @@
+- name: Install cert | create elasticsearch ssl path
+  file:
+    state: directory
+    dest: "{{ elasticsearch_ssl_path }}"
+  when: configurations_node_render.changed
+
+- name: install | create seachguard tree
+  file:
+    state: directory
+    dest: "{{ item }}"
+  with_items: "{{ seach_guard_create_dir_list }}"
+
+- name: download seachguard plugin | download seachguard plugin
+  get_url:
+    url: "{{ seach_guard_plugin_download_url }}"
+    dest: "{{ seach_guard_path_download }}"
+  register: search_guard_download_zip
+
+- name: stopped elasticsearch
+  service:
+    name: elasticsearch
+    state: stopped
+  when: configurations_node_render.changed
+
+- name: Offline tls tool | install Seachguard plugin
+  elasticsearch_plugin:
+    name: search-guard-7
+    state: present
+    force: yes
+    src: "file://{{ search_guard_download_zip.dest }}"
+
+- name: install seachguard plugin | start elasticseach server
+  service:
+    name: elasticsearch
+    state: started
+
+- name: install seachguard sgadmin | download seach guard sg admin tool
+  get_url:
+    url: "{{ seach_guard_download_sgtool_url }}"
+    dest: "{{ seach_guard_path_download }}"
+  register: seach_guard_download_sgtool_zip
+
+- name: install seachguard sgadmin | unarichive seach guard sg admin tool
+  unarchive:
+    src: "{{ seach_guard_download_sgtool_zip.dest }}"
+    dest: "{{ seach_guard_path_offline_tls_tool }}"
+  register: search_guard_download_unarchive
+  when: not search_guard_download_zip.changed

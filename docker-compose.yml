@@ -4,6 +4,6 @@ services:
   molecule:
     image: fminzoni/molecule
     volumes:
-      - .:/root/src/ansible-mcrouter
+      - .:/root/src/ansible-seachguard
       - /var/run/docker.sock:/var/run/docker.sock
-    working_dir: /root/src/ansible-mcrouter
+    working_dir: /root/src/ansible-seachguard

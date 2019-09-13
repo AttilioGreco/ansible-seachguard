@@ -1,0 +1,18 @@
+ca:
+  root:
+     dn: {{ search_guard_nodes.root.dn }}
+     keysize: {{ search_guard_nodes.root.keysize }}
+     validityDays: {{ search_guard_nodes.root.validityDays }}
+     pkPassword: {{ search_guard_nodes.root.pkPassword }}
+     file: {{ search_guard_nodes.root.file }}
+
+defaults:
+      validityDays: {{ search_guard_nodes.defaults.validityDays }}
+      pkPassword: {{ search_guard_nodes.defaults.pkPassword }}
+      httpsEnabled: {{ search_guard_nodes.defaults.httpsEnabled }}
+nodes:
+  - name: {{search_guard_nodes.node.name}}
+    dn: {{search_guard_nodes.node.cn}}
+    dns: 
+    {{search_guard_nodes.node.dns | to_nice_yaml(indent=2) | trim | indent(4)}}
+    ip: {{ search_guard_nodes.node.ip }}

@@ -1,0 +1,22 @@
+---
+- name: Offline tls tool | Create download tree
+  file:
+    state: directory
+    dest: "{{ item }}"
+  with_items: "{{ seach_guard_create_dir_list }}"
+  delegate_to: "{{keyring_host}}"
+
+- name: Offline tls tool | Download search guard offline-tls-tool
+  get_url:
+    url: "{{ seach_guard_download_url }}"
+    dest: "{{ seach_guard_path_download }}"
+  register: search_guard_download_zip
+  delegate_to: "{{keyring_host}}"
+
+- name: Offline tls tool | unzip Seach Guard offline-tls-tool
+  unarchive:
+    src: "{{ search_guard_download_zip.dest }}"
+    dest: "{{ seach_guard_path_offline_tls_tool }}"
+  register: search_guard_download_unarchive
+  delegate_to: "{{keyring_host}}"
+  when: not search_guard_download_zip.changed

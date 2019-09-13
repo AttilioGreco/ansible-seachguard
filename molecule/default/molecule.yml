@@ -7,8 +7,20 @@ lint:
   name: yamllint
 platforms:
   - name: instance-1
-    image: "GNU/Linux Ubuntu Server 16.04 Xenial Xerus x64"
-    flavor: e3standard.x1
+    image: "bk_centos_preInstall"
+    flavor: o1.highcpu-spot.x2
+    groups:
+      - elk
+  - name: instance-2
+    image: "bk_centos_preInstall"
+    flavor: o1.highcpu-spot.x2
+    groups:
+      - elk
+  - name: instance-3
+    image: "bk_centos_preInstall"
+    flavor: o1.highcpu-spot.x2
+    groups:
+      - elk
 provisioner:
   name: ansible
   options:

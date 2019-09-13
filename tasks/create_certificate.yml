@@ -1,0 +1,57 @@
+---
+
+- name: Create certificate | create ca certificate
+  command: "{{ seach_guard_path_offline_tls_tool }}/tools/sgtlstool.sh -c {{ configurations_ca_render.dest }} -t {{ seach_guard_path_cert_ca }} -ca"
+  register: create_ca
+  delegate_to: "{{keyring_host}}"
+  when: configurations_ca_render.changed
+
+- name: Create certificate | create nodes cert
+  command: "{{ seach_guard_path_offline_tls_tool }}/tools/sgtlstool.sh -c {{ configurations_node_render.dest }} -t {{ seach_guard_path_cert_ca }} -crt"
+  delegate_to: "{{keyring_host}}"
+  when: configurations_node_render.changed
+
+- name: Create certificate | move file from ca cert path to node cert path (copy)
+  copy:
+    src: "{{ item }}"
+    dest: "{{ seach_guard_path_cert_node }}"
+  delegate_to: "{{keyring_host}}"
+  with_fileglob:
+    - "{{ seach_guard_path_cert_ca }}/{{ansible_hostname}}*"
+
+- name: Create certificate | move file from ca cert path to node cert path (remove old file)
+  file:
+    path: "{{ item }}"
+    state: absent
+  delegate_to: "{{keyring_host}}"
+  with_fileglob:
+    - "{{ seach_guard_path_cert_ca }}/{{ansible_hostname}}*"
+
+- name: Create certificate | copy root ca key in client folder
+  copy:
+    src: "{{ seach_guard_path_cert_ca }}/root-ca.key"
+    dest: "{{ seach_guard_path_cert_client }}/root-ca.key"
+  delegate_to: "{{keyring_host}}"
+
+- name: Create certificate | copy root ca cart in client folder
+  copy:
+    src: "{{ seach_guard_path_cert_ca }}/root-ca.pem"
+    dest: "{{ seach_guard_path_cert_client }}/root-ca.pem"
+  delegate_to: "{{keyring_host}}"
+
+- name: Create certificate | create client cert
+  command: "{{ seach_guard_path_offline_tls_tool }}/tools/sgtlstool.sh -c {{ seach_guard_path_cert_client }}/client_{{ item.name }}.yml -t {{ seach_guard_path_cert_client }} -crt"
+  delegate_to: "{{keyring_host}}"
+  with_items: "{{ search_guard_client.clients }}"
+  when: configurations_client_render.changed
+
+- name: Create certificate | remove root ca key in client folder
+  file:
+    path: "{{ seach_guard_path_cert_client }}/root-ca.pem"
+    state: absent
+  delegate_to: "{{keyring_host}}"
+
+- name: Create certificate | remove root ca cart in client folder
+  file:
+    path: "{{ seach_guard_path_cert_client }}/root-ca.key"
+  delegate_to: "{{keyring_host}}"

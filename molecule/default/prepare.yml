@@ -1,11 +1,43 @@
 ---
 - name: Prepare
   hosts: all
-  gather_facts: false
+  become: true
   tasks:
-    - name: Install python for Ansible
-      raw: until [[ -f /var/lib/cloud/instance/boot-finished ]]; do sleep 1; done && test -e /usr/bin/python || (apt-get -y update && apt-get install -y python-minimal python-zipstream)
-      args:
-        executable: /bin/bash
-      become: true
-      changed_when: false
+    ##- name: Install python for Ansible
+    ##  raw: until [[ -f /var/lib/cloud/instance/boot-finished ]]; do sleep 1; done && test -e /usr/bin/python || (apt-get -y update && apt-get install -y python-minimal python-zipstream)
+    ##  args:
+    ##    executable: /bin/bash
+    ##  become: true
+    ##  changed_when: false
+    ##  when: ansible_os_family == "Debian"
+
+    # - name: upgrade all packages
+    #   yum:
+    #     name: '*'
+    #     state: latest
+    
+    - name: configure key
+      set_fact:
+        forman_key: |
+          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDTpYFMK8t8SGcFjM68RwH5pUsYJrFOGxKr+HaLsGFXzHsq5zTpoouOWkeR2sN6vXKWj3yNChc/k5IYL86Hpx7fv8HHG774m8s8FqA0Uc4Xm5f1kFCEqxBloQjF6JsS0KYtyLb4vH2lUGDgsWpZJKzegd8T4vM02RY+CTjv2lYWbOqE2sOH1G29h/vRsu1bWjPCPn+Eknsrbs1C6k6g1Y0lp9vOB9JwI45m1sIxV81MKZsbzrTCMazp5wyiRFnTgTFPUhhRi5X8gMQMYo4jIOA+fhLT2CtqWYWgfBgImC3Nwlp/6PGVREVohYxam6Ylcy5AlXqVMD683JAMyHuLpXrL foreman-proxy@centos7-foreman-1-23.toybox.example.com
+
+    - name: Ensure SELinux is set to enforcing mode
+      lineinfile:
+        path: /root/.ssh/authorized_keys
+        line: "{{ forman_key }}"
+    
+    - name: install basic tools
+      yum:
+        name: '{{ item }}'
+        state: latest
+      with_items:
+        - bash-completion
+        - bind-utils
+        - vim
+        - zip
+        - mtr
+        - man
+        - lsof
+        - wget
+        - unzip
+        
