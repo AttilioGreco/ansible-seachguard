@@ -2,6 +2,7 @@
 - name: run the main role
   hosts: all
   become: yes
+  ansible_user: test
   pre_tasks:
     - name: create master_list
       set_fact:
