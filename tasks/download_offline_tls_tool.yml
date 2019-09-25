@@ -4,6 +4,7 @@
     name: unzip
     state: present
   delegate_to: "{{keyring_host}}"
+  remote_user: "{{ remote_keyring_host_user }}"
 
 - name: Offline tls tool | install unzip pakage
   package:
