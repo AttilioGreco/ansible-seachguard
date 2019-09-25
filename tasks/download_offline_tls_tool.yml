@@ -22,4 +22,6 @@
   register: search_guard_download_unarchive
   delegate_to: "{{keyring_host}}"
   remote_user: "{{ remote_keyring_host_user }}"
-  when: search_guard_download_zip.changed
+  when: not search_guard_download_zip.changed
+  # Hi guest from the future i know this not is strange
+  # but check the code befor remove it
