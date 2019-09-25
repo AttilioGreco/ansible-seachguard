@@ -1,4 +1,10 @@
 ---
+- name: Offline tls tool | install in delegate host unzip pakage
+  package:
+    name: unzip
+    state: present
+  delegate_to: "{{keyring_host}}"
+
 - name: Offline tls tool | install unzip pakage
   package:
     name: unzip
