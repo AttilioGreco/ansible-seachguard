@@ -1,4 +1,9 @@
 ---
+- name: install ntpdate
+  package:
+    name: unzip
+    state: present
+
 - name: Offline tls tool | Create download tree
   file:
     state: directory
