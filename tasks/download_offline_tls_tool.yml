@@ -19,6 +19,7 @@
   unarchive:
     src: "{{ search_guard_download_zip.dest }}"
     dest: "{{ seach_guard_path_offline_tls_tool }}"
+    remote_src: yes
   register: search_guard_download_unarchive
   delegate_to: "{{keyring_host}}"
   remote_user: "{{ remote_keyring_host_user }}"
