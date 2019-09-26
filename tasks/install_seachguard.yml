@@ -39,10 +39,3 @@
     url: "{{ seach_guard_download_sgtool_url }}"
     dest: "{{ seach_guard_path_download }}"
   register: seach_guard_download_sgtool_zip
-
-- name: install seachguard sgadmin | unarichive seach guard sg admin tool
-  unarchive:
-    src: "{{ seach_guard_download_sgtool_zip.dest }}"
-    dest: "{{ seach_guard_path_offline_tls_tool }}"
-  register: search_guard_download_unarchive
-  when: not search_guard_download_zip.changed
