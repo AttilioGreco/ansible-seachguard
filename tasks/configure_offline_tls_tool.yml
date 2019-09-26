@@ -4,7 +4,7 @@
   delegate_to: "{{keyring_host}}"
   remote_user: "{{ remote_keyring_host_user }}"
 
-- name: configure offline tls tool | Automatic configurations CA
+- name: configure offline tls tool | create ca configuratios
   template:
     src: certicate_configurations.yml.j2
     dest: "{{ seach_guard_path_config_ca }}/ca_configuration.yml"
@@ -18,7 +18,7 @@
   delegate_to: "{{keyring_host}}"
   remote_user: "{{ remote_keyring_host_user }}"
 
-- name: configure offline tls tool | configurations Nodes
+- name: configure offline tls tool | create configuratios for node
   template:
     src: certificate_configurations_node.yaml.j2
     dest: "{{ seach_guard_path_config_node }}/node_{{ ansible_hostname }}.yml"
@@ -32,7 +32,7 @@
   delegate_to: "{{keyring_host}}"
   remote_user: "{{ remote_keyring_host_user }}"
 
-- name: configure offline tls tool | configurations client
+- name: configure offline tls tool | create configurations for client
   template:
     src: certificate_configurations_client.yml.j2
     dest: "{{ seach_guard_path_cert_client }}/client_{{ item.name }}.yml"
