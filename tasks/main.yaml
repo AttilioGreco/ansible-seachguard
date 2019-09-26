@@ -8,9 +8,9 @@
 - name: main | create certificate
   import_tasks: create_certificate.yml
 
-- name: main | create certificate
-  import_tasks: install_cert.yaml
+- name: main | create cert
+  import_tasks: install_cert.yml
 
-- name: main | install seachguard plugin
-  import_tasks: install_seachguard_plugin.yml
+- name: main | install seachguard
+  import_tasks: install_seachguard.yml
   

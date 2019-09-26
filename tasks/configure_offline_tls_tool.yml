@@ -4,12 +4,6 @@
   delegate_to: "{{keyring_host}}"
   remote_user: "{{ remote_keyring_host_user }}"
 
-- name: configure offline tls tool | debug show var seach_guard_offline_tls_tool_configurations
-  debug:
-    var: nodes
-  delegate_to: "{{keyring_host}}"
-  remote_user: "{{ remote_keyring_host_user }}"
-
 - name: configure offline tls tool | Automatic configurations CA
   template:
     src: certicate_configurations.yml.j2
