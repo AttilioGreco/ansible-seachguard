@@ -4,6 +4,6 @@ name: default
 
 steps:
 - name: test
-  image: fminzoni/molecule
+  image: ubuntu
   commands:
   - echo "test"
